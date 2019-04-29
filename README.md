@@ -13,6 +13,8 @@ Microsoft have bought Wunderlist and announced they will be closing down Wunderl
 ``pip install -r requirements.txt``
 or
 ``pip3 install -r requirements.txt``
+or
+``pip3 install requests==2.20.0 && pip3 install urllib3==1.24.2``
 
 ## Export data from Wunderlist (if using json method)
 
