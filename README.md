@@ -6,7 +6,7 @@ Microsoft have bought Wunderlist and announced they will be closing down Wunderl
 
 ## Clone this repo
 
-``git clone <clone-url>``
+``git clone https://github.com/gamecat69/wunderlist-to-trello.git``
 
 ##  Install required packages
 
