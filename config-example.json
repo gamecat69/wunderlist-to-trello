@@ -1,0 +1,13 @@
+{
+  "TrelloAPIKey" : "1111",
+  "TrelloAPIToken": "2222",
+  "TrelloAPISecret": "3333",
+  "WunderlistClientId": "4444",
+  "WunderlistClientSecret": "5555",
+  "WUnderlistClientToken": "6666",
+  "TrelloTeamMemberId": "7777",
+  "WunderlistExport": "Tasks.json",
+  "ExcludedLists": "Inbox,Shopping,Read Later",
+  "SkipCompletedTasks": "True",
+  "ArchiveCompletedTasks": "True"
+}
