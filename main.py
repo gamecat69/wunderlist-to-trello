@@ -98,9 +98,15 @@ def process_wunderlist_list(list, test_mode):
             comments = wunderlist.get_task_comments_by_id(task['id'])
             for comment in comments:
                 if 'text' in comment:
+                    #   Added for issue #3 from Github
+                    commentString = "From: " + comment['author']['name'] + " (" + comment['author']['email'] + " ). " + comment['text']
+
                     #print("     [COMMENT] %s)" % (comment['text']) )
                     print("     Adding action to [%s][%s][%s]" % (trello_board, trello_list, trello_card) )
-                    rc = trello.create_card_comment(trello_board, trello_list, trello_card, comment['text'])
+                    #rc = trello.create_card_comment(trello_board, trello_list, trello_card, comment['text'])
+
+                    #   Added for issue #3 from Github
+                    rc = trello.create_card_comment(trello_board, trello_list, trello_card, commentString)
                     if rc['code'] != 0:
                         print("     [ERR] %s" % rc['error'])
 
