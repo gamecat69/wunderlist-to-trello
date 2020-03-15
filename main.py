@@ -98,8 +98,7 @@ def process_wunderlist_list(list, test_mode):
             comments = wunderlist.get_task_comments_by_id(task['id'])
             for comment in comments:
                 if 'text' in comment:
-                    #   Added for issue #3 from Github
-                    commentString = "From: " + comment['author']['name'] + " (" + comment['author']['email'] + " ). " + comment['text']
+                    commentString = "(From " + comment['author']['name'] + "): " + comment['text']
 
                     #print("     [COMMENT] %s)" % (comment['text']) )
                     print("     Adding action to [%s][%s][%s]" % (trello_board, trello_list, trello_card) )
