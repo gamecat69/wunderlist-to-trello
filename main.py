@@ -97,7 +97,9 @@ def process_wunderlist_list(list, test_mode):
             #print(task)
             comments = wunderlist.get_task_comments_by_id(task['id'])
             for comment in comments:
+                #   Wunderlist currently publisheds Author->id,name,avatar, but not email
                 if 'text' in comment:
+                    #   Added for issue #3 from Github
                     commentString = "(From " + comment['author']['name'] + "): " + comment['text']
 
                     #print("     [COMMENT] %s)" % (comment['text']) )
