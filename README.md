@@ -30,7 +30,7 @@ or
 
 ## Get a Trello API Key and Token
 
-1. Login and get an API Key from here https://trello.com/1/appKey/generate.
+1. Login and get an API Key from here https://trello.com/app-key.
 2. Follow the additional link to create an API Token.
 
 ## Create the config file
