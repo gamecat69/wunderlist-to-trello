@@ -75,3 +75,13 @@ If a board of the same name already exists, Wunderlist tasks are imported into t
 
 In Trello, I like to have all Cards in a 'Doing' list visible in https://trello.com/username/cards.
 To do this, all starred Wunderlist items are assigned to my Trello team member id. You can specify your team member Id in config.json in the field **TrelloTeamMemberId**. If you dont want this functionality, leave the value blank
+
+# Known bugs and features
+
+1. The Trello API will not allow a new card to be created with the same name as an existing card in the same board. To workaround this issue, rename Wunderlist tasks before running this code.
+
+2. Wunderlist subtasks are not currently supported.
+
+3. Due dates and reminders are not currently supported.
+
+4. List order may not be preserved once imported into Trello.
