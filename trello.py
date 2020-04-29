@@ -302,12 +302,32 @@ def create_card(board_name, list_name, card_name, card_description, card_members
         rc['code'] = 1
         return rc
 
-def create_card_comment(board_name, list_name, card_name, comment):
+def add_card_comment(cardId, comment):
+    #   Build the new list data dict object
+    arguments = {'text': comment}
+    headers   = {}
 
     cfg = _get_config('config.json')
     params_key_and_token = {'key':cfg["TrelloAPIKey"],'token':cfg["TrelloAPIToken"]}
+    rc = {}
 
-    card_found  = 0
+    #   Build URL
+    url = base + '/cards/' + cardId + '/actions/comments'
+
+    #   Call the Trello API, passing params and arguments
+    #   The Trello API returns an array of dicts
+    r = req.request_json(url, params_key_and_token, arguments, 'post', headers)
+    if 'response' in r:
+        resp_dict = r['response']
+        rc['code'] = 0
+        rc['id'] = resp_dict['id']
+        return rc
+    else:
+        print(r['error'])
+        rc['code'] = 1
+        return rc
+
+def create_card_comment(board_name, list_name, card_name, comment):
     rc = {}
     cards = get_cards(board_name, list_name)
 
@@ -318,33 +338,12 @@ def create_card_comment(board_name, list_name, card_name, comment):
 
     for card in cards:
         if card['name'] == card_name:
+            return add_card_comment(card['id'], comment)
 
-            card_found  = 1
-
-            #   Build the new list data dict object
-            arguments = {'text': comment}
-            headers   = {}
-
-            #   Build URL
-            url = base + '/cards/' + card['id'] + '/actions/comments'
-
-            #   Call the Trello API, passing params and arguments
-            #   The Trello API returns an array of dicts
-            r = req.request_json(url, params_key_and_token, arguments, 'post', headers)
-            if 'response' in r:
-                resp_dict = r['response']
-                rc['code'] = 0
-                rc['id'] = resp_dict['id']
-                return rc
-            else:
-                print(r['error'])
-                rc['code'] = 1
-                return rc
-
-    if not card_found:
-        print("[ERR] Card '%s' not found" % (card_name) )
-        rc['code'] = 1
-        return rc
+    
+    print("[ERR] Card '%s' not found" % (card_name) )
+    rc['code'] = 1
+    return rc
 
 def archive_card_by_id(card_id):
     #   Archives a card given a card id
@@ -370,6 +369,40 @@ def archive_card_by_id(card_id):
         resp_dict = r['response']
         rc['code'] = 0
         rc['id'] = resp_dict['id']
+        return rc
+    else:
+        print(r['error'])
+        rc['code'] = 1
+        return rc
+
+def getMemberIdByEmail(email):
+    #   return id of a member
+
+    #   Get config
+    cfg = _get_config('config.json')
+    params_key_and_token = {'key':cfg["TrelloAPIKey"],'token':cfg["TrelloAPIToken"]}
+
+    rc = {}
+
+    #   Build the new list data dict object
+    arguments = {}
+    headers   = {}
+
+    #   Build URL
+    url = base + 'search/members/?query=' + email
+
+    #   Call the Trello API, passing params and arguments
+    #   The Trello API returns an array of dicts
+    r = req.request_json(url, params_key_and_token, arguments, 'get', headers)
+
+    if 'response' in r:
+        resp_dict = r['response']
+        rc['code'] = 0
+        
+        if len(resp_dict) > 0:
+            rc['id'] = resp_dict[0]['id']
+        else:
+            rc['id'] = ''
         return rc
     else:
         print(r['error'])

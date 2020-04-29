@@ -252,3 +252,27 @@ def get_tasks_by_id(list_id, completed):
     else:
         print(r['error'])
         return []
+
+def get_users():
+    #   Returns user email from its id
+
+    #   Get config
+    cfg = _get_config('config.json')
+
+    access_token = cfg['WUnderlistClientToken']
+    client_id    = cfg['WunderlistClientId']
+
+    # Build out the URL based on the documentation
+    url = base + 'users'
+
+    #   Prepare data to send
+    headers   = {'X-Access-Token': access_token, 'X-Client-ID': client_id, 'Content-Type' : 'application/json'}
+    params    = {}
+    arguments = {}
+
+    r = req.request_json(url, params, arguments, 'get', headers)
+    if 'response' in r:
+        return r['response']
+    else:
+        print(r['error'])
+        return []
