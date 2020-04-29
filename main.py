@@ -45,10 +45,20 @@ def process_wunderlist_list(list, test_mode):
         tasks = (tasks + c_tasks)
 
     for task in tasks:
+        idMembers = []
+        trello_creator = get_trello_user_from_wunderlist(task['created_by_id'])
 
-        #print(task)
+        if trello_creator:
+            idMembers.append(trello_creator)
 
-        trello_assigned_team_member = ''
+        if 'assignee_id' in task:
+            trello_assigned_team_member = get_trello_user_from_wunderlist(task['assignee_id'])
+
+            if trello_assigned_team_member:
+                idMembers.append(trello_assigned_team_member)
+
+        ','.join(idMembers)
+
         trello_card = task['title']
 
         #print("\n [TASK] %s (Completed: %s) (Starred: %s)" % (trello_card, task['completed'], task['starred']) )
@@ -59,7 +69,6 @@ def process_wunderlist_list(list, test_mode):
             if str(task['starred']) == 'True':
                 #   Starred not completed = Doing
                 trello_list = 'Doing'
-                trello_assigned_team_member = cfg['TrelloTeamMemberId']
             else:
                 #   Not starred not completed = To Do
                 trello_list = 'To Do'
@@ -83,7 +92,7 @@ def process_wunderlist_list(list, test_mode):
         #   Create Trello Card
         closed = "false"
         print("Creating card '%s'" % (trello_card) )
-        rc = trello.create_card(trello_board, trello_list, trello_card, card_desc, trello_assigned_team_member, closed)
+        rc = trello.create_card(trello_board, trello_list, trello_card, card_desc, idMembers, closed)
         if rc['code'] == 2:
             print("     [ERR] already exists")
         elif rc['code'] != 0:
@@ -114,6 +123,25 @@ def process_wunderlist_list(list, test_mode):
             if cfg['ArchiveCompletedTasks'] == 'True' and trello_list == 'Done':
                 print("     Archiving card '%s'" % (trello_card))
                 trello.archive_card_by_id(new_card_id)
+
+def get_trello_user_from_wunderlist(id):
+    email = ''
+    for user in wunderListUsers:
+        if user['id'] == id:
+            email = user['email']
+
+    if email == '':
+        print('wunderlist user not found!')
+        return ''
+
+    if  email in trelloUsers:
+        return trelloUsers[email]
+    
+    # not found, query for it
+    resp = trello.getMemberIdByEmail(email)
+    trelloUsers[email] = resp['id']
+
+    return trelloUsers[email]
 
 def process_wunderlist_list_from_json(list, test_mode):
 
@@ -200,6 +228,13 @@ cfg = _get_config('config.json')
 excluded_lists = ( a.strip() for a in cfg['ExcludedLists'].lower().split(",") )
 excluded_lists = frozenset(excluded_lists)
 
+included_lists = ( a.strip() for a in cfg['IncludedLists'].lower().split(",") )
+included_lists = frozenset(included_lists)
+
+#users
+wunderListUsers = wunderlist.get_users()
+trelloUsers = {}
+
 print("Gettings lists from Wunderlist API")
 lists = wunderlist.get_lists()
 
@@ -211,6 +246,8 @@ for list in lists:
     #  Skip if list is excluded
     if list['title'].lower() in excluded_lists:
         print("- Skipping excluded list: %s" % list['title'])
+    elif len(included_lists) > 0 and (list['title'].lower() not in included_lists):
+        print("- Skipping not included list: %s" % list['title'])
     else:
         #   test_mode always pushes to a Trello board named 'Test Board'
         print("Processing list from Wunderlist API...")

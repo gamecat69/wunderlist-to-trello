@@ -4,30 +4,30 @@ import trello
 ##  Example: Print all active boards->lists->cards
 ##  ------------------------------------------------
 
-# print("\nGetting boards and lists...")
-# boards = trello.get_boards()
-# for board in boards:
-#     if board['closed'] == True:
-#         continue
-#     else:
-#         print("\n[%s] %s" % ('BOARD', board['name']))
-#         lists = trello.get_lists(board['name'])
-#         for list in lists:
-#             if list['closed'] == True:
-#                 continue
-#             else:
-#                 print("\n     [%s] %s" % ('LIST', list['name']))
-#                 cards = trello.get_cards(board['name'], list['name'])
-#                 for card in cards:
-#                     if card['closed'] == "True2":
-#                         continue
-#                     else:
-#                         print("         [%s] %s (Members: %s)" % ('CARD', card['name'], card['idMembers']))
-#                         actions = trello.get_card_actions(board['name'], list['name'], card['name'])
-#                         for action in actions:
-#                             #print(action)
-#                             if action['type'] == 'commentCard':
-#                                 print("             [%s] (%s) : %s" % ('COMMENT', action['date'], action['data']['text']))
+print("\nGetting boards and lists...")
+boards = trello.get_boards()
+for board in boards:
+    if board['closed'] == True:
+        continue
+    else:
+        print("\n[%s] %s" % ('BOARD', board['name']))
+        lists = trello.get_lists(board['name'])
+        for list in lists:
+            if list['closed'] == True:
+                continue
+            else:
+                print("\n     [%s] %s" % ('LIST', list['name']))
+                cards = trello.get_cards(board['name'], list['name'])
+                for card in cards:
+                    if card['closed'] == "True2":
+                        continue
+                    else:
+                        print("         [%s] %s (Members: %s)" % ('CARD', card['name'], card['idMembers']))
+                        actions = trello.get_card_actions(board['name'], list['name'], card['name'])
+                        for action in actions:
+                            #print(action)
+                            if action['type'] == 'commentCard':
+                                print("             [%s] (%s) : %s" % ('COMMENT', action['date'], action['data']['text']))
 
 # ##  ------------------------------------------------
 # ##  Example: Create a board
